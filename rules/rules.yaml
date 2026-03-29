@@ -1,0 +1,54 @@
+rules:
+  # 🔴 AWS Access Key
+  - name: aws_access_key
+    pattern: AKIA[0-9A-Z]{16}
+    severity: HIGH
+
+  # 🔴 AWS Secret Key (loose but useful)
+  - name: aws_secret_key
+    pattern: (?i)aws(.{0,20})?(secret|access)[^a-zA-Z0-9][0-9a-zA-Z/+]{40}
+    severity: HIGH
+
+  # 🔴 GitHub Token
+  - name: github_token
+    pattern: ghp_[a-zA-Z0-9]{36}
+    severity: HIGH
+
+  # 🔴 Stripe Live Key
+  - name: stripe_live_key
+    pattern: sk_live_[0-9a-zA-Z]{24,}
+    severity: HIGH
+
+  # 🔴 Private Key (PEM)
+  - name: private_key
+    pattern: -----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----
+    severity: HIGH
+
+  # 🟡 JWT Token (full structure)
+  - name: jwt
+    pattern: eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+
+    severity: MEDIUM
+
+  # 🟡 Generic API Key (context-based)
+  - name: generic_api_key
+    pattern: (?i)(api_key|apikey|token|access_key)[^a-zA-Z0-9]{0,5}[a-zA-Z0-9_\-]{16,}
+    severity: MEDIUM
+
+  # 🔴 Hardcoded secret keyword
+  - name: hardcoded_secret
+    pattern: (?i)secret[_-]?[a-zA-Z0-9]{8,}
+    severity: HIGH
+
+  # 🔴 Password assignment
+  - name: password
+    pattern: (?i)password[^a-zA-Z0-9]{0,5}[a-zA-Z0-9@#$%^&+=!]{8,}
+    severity: HIGH
+
+ignore:
+  - .git
+  - node_modules
+  - vendor
+  - rules
+  - testdata
+  - .secret-scanner-cache.json
+  - secret-scanner
