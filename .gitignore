@@ -1,0 +1,14 @@
+# binary
+secret-scanner
+
+# cache
+.secret-scanner-cache.json
+
+# test / demo
+testdata/
+test-repo/
+ai-healthcare/
+
+# go build
+*.exe
+*.out
