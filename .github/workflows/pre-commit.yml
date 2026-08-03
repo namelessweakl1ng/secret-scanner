@@ -1,0 +1,19 @@
+name: Pre-commit Hook Check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e ".[dev]"
+      - run: ruff check secret_scanner tests
+      - run: black --check secret_scanner tests
+      - run: mypy secret_scanner || true  # advisory only

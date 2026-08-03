@@ -1,0 +1,92 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+develop-eggs/
+sdist/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- Testing & coverage ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+.cache/
+nosetests.xml
+
+# --- Type checkers & linters ---
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+.dmypy.json
+dmypy.json
+
+# --- IDEs / editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+*.ipynb
+
+# --- Project-specific ---
+# Local secret-scanner config (may contain sensitive overrides)
+.secret-scanner.local.yaml
+
+# Local scan history database (contains finding fingerprints)
+.cache/secret-scanner/
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated audit reports (don't commit scan output)
+secret-scanner-audit.html
+secret-scanner-report.html
+scan.json
+scan.sarif
+scan.csv
+scan.md
+
+# Sample / temporary files used during local testing
+/tmp/
+*.tmp
+
+# Build artifacts
+*.whl
+*.tar.gz
+
+# Hatch
+.hatch/
+
+# Type stubs
+pyrightconfig.json

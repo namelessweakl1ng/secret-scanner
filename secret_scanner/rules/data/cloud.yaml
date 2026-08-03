@@ -1,0 +1,171 @@
+# Cloud provider credentials - AWS, Azure, GCP, DigitalOcean, Cloudflare, etc.
+# Each rule uses unique IDs so user-supplied rules can override them.
+version: 1
+rules:
+  # ---- AWS ----
+  - id: aws_access_key_id
+    name: AWS Access Key ID
+    provider: aws_access_key
+    pattern: 'AKIA[0-9A-Z]{16}'
+    severity: critical
+    exact_format: true
+    min_length: 20
+    max_length: 20
+    description: AWS IAM access key ID (starts with AKIA)
+    tags: [aws, cloud, iam]
+
+  - id: aws_secret_access_key
+    name: AWS Secret Access Key
+    provider: aws_secret_key
+    pattern: '(?i)aws(.{0,20})?(secret|sk|secret_access_key)[\s:=]+["'']?([A-Za-z0-9/+=]{40})["'']?'
+    severity: critical
+    exact_format: true
+    min_length: 40
+    max_length: 40
+    description: AWS secret access key (40 char base64)
+    tags: [aws, cloud, secret]
+
+  - id: aws_account_id
+    name: AWS Account ID (context)
+    provider: aws_account
+    pattern: '(?i)aws[_-]?account[_-]?id[\s:=]+["'']?(\d{12})["'']?'
+    severity: low
+    min_length: 12
+    description: 12-digit AWS account ID in a sensitive context
+    tags: [aws, cloud]
+
+  - id: aws_session_token
+    name: AWS Session Token
+    provider: aws_session_token
+    pattern: '(?i)aws[_-]?(session|security)[_-]?token[\s:=]+["'']?(ASIA[A-Z0-9]{16})["'']?'
+    severity: high
+    min_length: 20
+    description: AWS temporary session token (ASIA prefix)
+    tags: [aws, cloud]
+
+  # ---- Azure ----
+  - id: azure_storage_account_key
+    name: Azure Storage Account Key
+    provider: azure_storage_key
+    pattern: 'AccountKey=[A-Za-z0-9+/]{88}={0,2}'
+    severity: critical
+    exact_format: true
+    min_length: 88
+    description: Azure storage account key in connection string
+    tags: [azure, cloud, storage]
+
+  - id: azure_connection_string
+    name: Azure Connection String
+    provider: azure_connection_string
+    pattern: 'DefaultEndpointsProtocol=https?;AccountName=[^;]+;AccountKey=[A-Za-z0-9+/=]+'
+    severity: critical
+    min_length: 60
+    description: Azure storage connection string
+    tags: [azure, cloud]
+
+  - id: azure_tenant_id
+    name: Azure Tenant ID (context)
+    provider: azure_tenant
+    pattern: '(?i)azure[_-]?tenant[_-]?id[\s:=]+["'']?([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})["'']?'
+    severity: low
+    min_length: 36
+    description: Azure tenant ID in a sensitive context
+    tags: [azure, cloud]
+
+  - id: azure_client_secret
+    name: Azure Client Secret
+    provider: azure_client_secret
+    pattern: '(?i)azure[_-]?client[_-]?secret[\s:=]+["'']?([A-Za-z0-9_\-\.]{20,})["'']?'
+    severity: high
+    min_length: 20
+    description: Azure service principal client secret
+    tags: [azure, cloud]
+
+  # ---- GCP ----
+  - id: gcp_api_key
+    name: Google API Key
+    provider: google_api_key
+    pattern: 'AIza[0-9A-Za-z_\-]{35}'
+    severity: high
+    exact_format: true
+    min_length: 39
+    max_length: 39
+    description: Google API key (starts with AIza)
+    tags: [gcp, google, api_key]
+
+  - id: gcp_oauth_id
+    name: Google OAuth Client ID
+    provider: google_oauth
+    pattern: '[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com'
+    severity: medium
+    min_length: 40
+    description: Google OAuth 2.0 client ID
+    tags: [gcp, google, oauth]
+
+  - id: gcp_service_account_email
+    name: GCP Service Account Email
+    provider: gcp_service_account
+    pattern: '[a-z][a-z0-9-]+@[a-z0-9-]+\.iam\.gserviceaccount\.com'
+    severity: medium
+    min_length: 30
+    description: GCP service account email
+    tags: [gcp, google]
+
+  # ---- DigitalOcean ----
+  - id: digitalocean_pat
+    name: DigitalOcean Personal Access Token
+    provider: digitalocean_pat
+    pattern: 'dop_v1_[a-f0-9]{64}'
+    severity: high
+    exact_format: true
+    min_length: 32
+    description: DigitalOcean personal access token
+    tags: [digitalocean, cloud]
+
+  - id: digitalocean_oauth
+    name: DigitalOcean OAuth Token
+    provider: digitalocean_oauth
+    pattern: 'doo_v1_[a-f0-9]{64}'
+    severity: high
+    min_length: 32
+    description: DigitalOcean OAuth token
+    tags: [digitalocean, cloud]
+
+  # ---- Cloudflare ----
+  - id: cloudflare_api_key
+    name: Cloudflare API Key
+    provider: cloudflare_api_key
+    pattern: '(?i)cloudflare[_-]?api[_-]?key[\s:=]+["'']?([a-f0-9]{37,40})["'']?'
+    severity: high
+    min_length: 37
+    description: Cloudflare API key
+    tags: [cloudflare, cloud]
+
+  - id: cloudflare_origin_ca
+    name: Cloudflare Origin CA Key
+    provider: cloudflare_origin_ca
+    pattern: 'v1\.0-[a-f0-9]{24}-[a-f0-9]{146}'
+    severity: high
+    min_length: 100
+    description: Cloudflare Origin CA certificate key
+    tags: [cloudflare, cloud]
+
+  # ---- Linode / Vultr ----
+  - id: linode_api_key
+    name: Linode API Key
+    provider: linode_api_key
+    pattern: '(?i)linode[_-]?api[_-]?(key|token)[\s:=]+["'']?([a-f0-9]{64})["'']?'
+    severity: high
+    min_length: 64
+    description: Linode API key
+    tags: [linode, cloud]
+
+  # ---- Scaleway ----
+  - id: scaleway_secret_key
+    name: Scaleway Secret Key
+    provider: scaleway_secret_key
+    pattern: '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+    severity: low
+    min_length: 36
+    description: Scaleway-style UUID secret key (low confidence without context)
+    tags: [scaleway, cloud]

@@ -1,0 +1,40 @@
+# Example custom rules file.
+# Load via secret-scanner.yaml:
+#
+#   rules:
+#     - ./rules/my-rules.yaml
+#
+# Or pass directly:
+#
+#   secret-scanner scan . --config /path/to/secret-scanner.yaml
+
+version: 1
+rules:
+  - id: custom:internal_api_key
+    name: Internal API Key
+    provider: internal
+    pattern: 'mycorp_[A-Za-z0-9]{32}'
+    severity: high
+    exact_format: true
+    min_length: 32
+    description: Internal MyCorp API key
+    tags: [internal, api_key]
+
+  - id: custom:legacy_token
+    name: Legacy Auth Token
+    provider: legacy
+    pattern: 'LEGACY-[a-f0-9]{40}'
+    severity: medium
+    exact_format: true
+    min_length: 40
+    description: Legacy authentication token (deprecated format)
+    tags: [legacy, token]
+
+  - id: custom:webhook_url
+    name: Internal Webhook URL
+    provider: internal_webhook
+    pattern: 'https://hooks\.mycorp\.internal/[A-Za-z0-9_\-]{40,}'
+    severity: medium
+    min_length: 40
+    description: Internal webhook URL with embedded token
+    tags: [internal, webhook]

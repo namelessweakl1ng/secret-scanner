@@ -1,0 +1,231 @@
+# Database connection strings, generic secrets, framework-specific secrets.
+version: 1
+rules:
+  # ---- Database URLs ----
+  - id: postgres_connection_url
+    name: PostgreSQL Connection URL
+    provider: postgres
+    pattern: 'postgres(?:ql)?://[^\s:/@]+:[^\s:/@]+@[^\s:/@]+:\d+/[^\s]+'
+    severity: high
+    min_length: 20
+    description: PostgreSQL connection string with credentials
+    tags: [database, postgres]
+
+  - id: mysql_connection_url
+    name: MySQL Connection URL
+    provider: mysql
+    pattern: 'mysql://[^\s:/@]+:[^\s:/@]+@[^\s:/@]+:\d+/[^\s]+'
+    severity: high
+    min_length: 20
+    description: MySQL connection string with credentials
+    tags: [database, mysql]
+
+  - id: mongodb_connection_url
+    name: MongoDB Connection URL
+    provider: mongodb
+    pattern: 'mongodb(?:\+srv)?://[^\s:/@]+:[^\s:/@]+@[^\s]+'
+    severity: high
+    min_length: 20
+    description: MongoDB connection string with credentials
+    tags: [database, mongodb, mongo]
+
+  - id: redis_connection_url
+    name: Redis Connection URL
+    provider: redis
+    pattern: 'rediss?://:[^\s:/@]+@[^\s:/@]+:\d+'
+    severity: high
+    min_length: 15
+    description: Redis connection string with password
+    tags: [database, redis]
+
+  - id: amqp_connection_url
+    name: AMQP Connection URL
+    provider: amqp
+    pattern: 'amqp(?:s)?://[^\s:/@]+:[^\s:/@]+@[^\s]+'
+    severity: high
+    min_length: 15
+    description: AMQP/RabbitMQ connection string with credentials
+    tags: [database, amqp, rabbitmq]
+
+  - id: generic_db_url
+    name: Generic Database URL
+    provider: database_url
+    pattern: '(?i)(jdbc:[a-z]+:[^\s]+|mssql://[^\s:/@]+:[^\s:/@]+@[^\s]+)'
+    severity: medium
+    min_length: 15
+    description: JDBC or MSSQL connection string
+    tags: [database, jdbc]
+
+  - id: oracle_connection_string
+    name: Oracle Connection String
+    provider: oracle
+    pattern: '(?i)oracle(?:_tns)?://[^\s:/@]+:[^\s:/@]+@[^\s]+'
+    severity: high
+    min_length: 15
+    description: Oracle connection string
+    tags: [database, oracle]
+
+  # ---- Generic password / secret in context ----
+  - id: password_assignment
+    name: Password Assignment
+    provider: password
+    pattern: '(?i)(?:password|passwd|pwd)[\s:=]+["'']([^"'']{8,})["'']'
+    severity: medium
+    min_length: 8
+    description: Password assigned to a variable
+    tags: [password, secret]
+
+  - id: secret_assignment
+    name: Secret Assignment
+    provider: secret
+    pattern: '(?i)(?:secret|api[_-]?key|api[_-]?secret)[\s:=]+["'']([A-Za-z0-9_\-]{12,})["'']'
+    severity: medium
+    min_length: 12
+    description: Secret/API key assigned to a variable
+    tags: [secret, api_key]
+
+  - id: token_assignment
+    name: Token Assignment
+    provider: token
+    pattern: '(?i)(?:token|access[_-]?token|refresh[_-]?token)[\s:=]+["'']([A-Za-z0-9_\-\.]{16,})["'']'
+    severity: medium
+    min_length: 16
+    description: Token assigned to a variable
+    tags: [token, auth]
+
+  - id: auth_header
+    name: Authorization Header
+    provider: auth_header
+    pattern: '(?i)authorization[\s:=]+["'']?(basic|bearer|token)[\s]+[A-Za-z0-9_\-\.=]{20,}["'']?'
+    severity: high
+    min_length: 25
+    description: HTTP Authorization header value
+    tags: [auth, http]
+
+  # ---- Framework secrets ----
+  - id: django_secret_key
+    name: Django SECRET_KEY
+    provider: django_secret_key
+    pattern: '(?i)SECRET_KEY\s*=\s*["'']([A-Za-z0-9_\-]{32,})["'']'
+    severity: high
+    min_length: 32
+    description: Django SECRET_KEY in settings
+    tags: [django, framework, secret]
+
+  - id: flask_secret_key
+    name: Flask SECRET_KEY
+    provider: flask_secret_key
+    pattern: '(?i)(?:app\.secret_key|SECRET_KEY)\s*=\s*["'']([A-Za-z0-9_\-]{16,})["'']'
+    severity: high
+    min_length: 16
+    description: Flask SECRET_KEY assignment
+    tags: [flask, framework, secret]
+
+  - id: rails_master_key
+    name: Rails master.key
+    provider: rails_master_key
+    pattern: '(?i)RAILS_(?:MASTER|SECRET)_KEY\s*=\s*["'']?([a-f0-9]{64})["'']?'
+    severity: high
+    min_length: 64
+    description: Rails master key
+    tags: [rails, framework, secret]
+
+  - id: laravel_app_key
+    name: Laravel APP_KEY
+    provider: laravel_app_key
+    pattern: '(?i)APP_KEY\s*=\s*(?:base64:)?([A-Za-z0-9+/=]{32,})'
+    severity: high
+    min_length: 32
+    description: Laravel application key
+    tags: [laravel, framework, secret]
+
+  - id: aspnet_machine_key
+    name: ASP.NET Machine Key
+    provider: aspnet_machine_key
+    pattern: '(?i)(?:machine[_-]?key|validation[_-]?key)[\s:=]+["'']?([A-Za-z0-9+/=]{40,})["'']?'
+    severity: high
+    min_length: 40
+    description: ASP.NET machine/validation key
+    tags: [aspnet, framework, secret]
+
+  - id: spring_boot_secret
+    name: Spring Boot Secret
+    provider: spring_secret
+    pattern: '(?i)(?:spring|server)\.[a-z\.]*(?:password|secret|key)[\s:=]+([^\s]+)'
+    severity: medium
+    min_length: 8
+    description: Spring Boot property with secret
+    tags: [spring, framework, secret]
+
+  # ---- Misc / config ----
+  - id: smtp_password
+    name: SMTP Password (context)
+    provider: smtp_password
+    pattern: '(?i)smtp[_-]?(pass|password|pwd)[\s:=]+["'']?([^\s"'']{6,})["'']?'
+    severity: medium
+    min_length: 6
+    description: SMTP password in config
+    tags: [smtp, email, password]
+
+  - id: cookie_secret
+    name: Cookie Secret (context)
+    provider: cookie_secret
+    pattern: '(?i)cookie[_-]?(secret|key|signing[_-]?key)[\s:=]+["'']([A-Za-z0-9_\-]{16,})["'']'
+    severity: medium
+    min_length: 16
+    description: Cookie signing secret
+    tags: [cookie, session]
+
+  - id: webhook_secret
+    name: Webhook Secret (context)
+    provider: webhook_secret
+    pattern: '(?i)webhook[_-]?secret[\s:=]+["'']([A-Za-z0-9_\-]{16,})["'']'
+    severity: high
+    min_length: 16
+    description: Webhook signing secret
+    tags: [webhook, secret]
+
+  - id: session_secret
+    name: Session Secret (context)
+    provider: session_secret
+    pattern: '(?i)session[_-]?(secret|key)[\s:=]+["'']([A-Za-z0-9_\-]{16,})["'']'
+    severity: medium
+    min_length: 16
+    description: Session signing secret
+    tags: [session, secret]
+
+  - id: refresh_token
+    name: Refresh Token (context)
+    provider: refresh_token
+    pattern: '(?i)refresh[_-]?token[\s:=]+["'']([A-Za-z0-9_\-\.]{32,})["'']'
+    severity: high
+    min_length: 32
+    description: OAuth refresh token
+    tags: [token, oauth, refresh]
+
+  - id: access_token
+    name: Access Token (context)
+    provider: access_token
+    pattern: '(?i)access[_-]?token[\s:=]+["'']([A-Za-z0-9_\-\.]{32,})["'']'
+    severity: high
+    min_length: 32
+    description: OAuth access token
+    tags: [token, oauth, access]
+
+  - id: client_secret_assignment
+    name: Client Secret (context)
+    provider: client_secret
+    pattern: '(?i)client[_-]?secret[\s:=]+["'']([A-Za-z0-9_\-]{16,})["'']'
+    severity: high
+    min_length: 16
+    description: OAuth client secret
+    tags: [oauth, secret]
+
+  - id: private_key_assignment
+    name: Private Key Assignment (context)
+    provider: private_key
+    pattern: '(?i)private[_-]?key[\s:=]+["'']([A-Za-z0-9+/=_\-]{40,})["'']'
+    severity: critical
+    min_length: 40
+    description: Private key material in a variable
+    tags: [private_key, secret]

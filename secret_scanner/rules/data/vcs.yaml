@@ -1,0 +1,161 @@
+# VCS provider credentials and tokens.
+version: 1
+rules:
+  # ---- GitHub ----
+  - id: github_pat_v1
+    name: GitHub Personal Access Token (v1)
+    provider: github_pat
+    pattern: 'ghp_[A-Za-z0-9]{36}'
+    severity: critical
+    exact_format: true
+    min_length: 40
+    max_length: 40
+    description: GitHub personal access token (classic, 2020+ format)
+    tags: [github, vcs, pat]
+
+  - id: github_pat_v2
+    name: GitHub Fine-Grained PAT
+    provider: github_pat
+    pattern: 'github_pat_[A-Za-z0-9_]{22,}_[A-Za-z0-9]{59}'
+    severity: critical
+    exact_format: true
+    min_length: 80
+    description: GitHub fine-grained personal access token
+    tags: [github, vcs, pat]
+
+  - id: github_oauth_token
+    name: GitHub OAuth Access Token
+    provider: github_oauth
+    pattern: 'gho_[A-Za-z0-9]{36}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: GitHub OAuth access token
+    tags: [github, vcs, oauth]
+
+  - id: github_user_token
+    name: GitHub User-to-Server Token
+    provider: github_user_token
+    pattern: 'ghu_[A-Za-z0-9]{36}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: GitHub user-to-server token
+    tags: [github, vcs]
+
+  - id: github_server_token
+    name: GitHub Server-to-Server Token
+    provider: github_server_token
+    pattern: 'ghs_[A-Za-z0-9]{36}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: GitHub server-to-server token
+    tags: [github, vcs]
+
+  - id: github_refresh_token
+    name: GitHub Refresh Token
+    provider: github_refresh
+    pattern: 'ghr_[A-Za-z0-9]{36}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: GitHub OAuth refresh token
+    tags: [github, vcs]
+
+  - id: github_app_webhook_secret
+    name: GitHub App Webhook Secret (context)
+    provider: github_webhook_secret
+    pattern: '(?i)github[_-]?webhook[_-]?secret[\s:=]+["'']?([A-Za-z0-9_\-]{20,})["'']?'
+    severity: high
+    min_length: 20
+    description: GitHub App webhook secret
+    tags: [github, webhook]
+
+  # ---- GitLab ----
+  - id: gitlab_pat_v1
+    name: GitLab Personal Access Token (v1)
+    provider: gitlab_pat
+    pattern: 'glpat-[A-Za-z0-9_\-]{20}'
+    severity: critical
+    exact_format: true
+    min_length: 25
+    description: GitLab personal access token
+    tags: [gitlab, vcs, pat]
+
+  - id: gitlab_pat_v2
+    name: GitLab Personal Access Token (v2)
+    provider: gitlab_pat
+    pattern: 'glpat-[A-Za-z0-9_\-]{50,}'
+    severity: critical
+    exact_format: true
+    min_length: 50
+    description: GitLab personal access token (longer variant)
+    tags: [gitlab, vcs, pat]
+
+  - id: gitlab_deploy_token
+    name: GitLab Deploy Token (context)
+    provider: gitlab_deploy_token
+    pattern: '(?i)gitlab[_-]?deploy[_-]?token[\s:=]+["'']?([A-Za-z0-9_\-]{20,})["'']?'
+    severity: high
+    min_length: 20
+    description: GitLab deploy token
+    tags: [gitlab, vcs]
+
+  - id: gitlab_runner_token
+    name: GitLab Runner Registration Token
+    provider: gitlab_runner
+    pattern: 'GR1348941[A-Za-z0-9_\-]{20}'
+    severity: critical
+    exact_format: true
+    min_length: 28
+    description: GitLab CI runner registration token
+    tags: [gitlab, vcs, ci]
+
+  - id: gitlab_pipeline_trigger
+    name: GitLab Pipeline Trigger Token
+    provider: gitlab_trigger
+    pattern: 'glptt-[A-Za-z0-9_\-]{40}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: GitLab pipeline trigger token
+    tags: [gitlab, vcs, ci]
+
+  # ---- Bitbucket ----
+  - id: bitbucket_app_password
+    name: Bitbucket App Password (context)
+    provider: bitbucket_app_password
+    pattern: '(?i)bitbucket[_-]?app[_-]?password[\s:=]+["'']?([A-Za-z0-9_\-]{20,})["'']?'
+    severity: high
+    min_length: 20
+    description: Bitbucket app password
+    tags: [bitbucket, vcs]
+
+  - id: bitbucket_access_token
+    name: Bitbucket Access Token (context)
+    provider: bitbucket
+    pattern: '(?i)bitbucket[_-]?(access[_-]?token|pat)[\s:=]+["'']?([A-Za-z0-9_\-]{20,})["'']?'
+    severity: high
+    min_length: 20
+    description: Bitbucket access token
+    tags: [bitbucket, vcs]
+
+  # ---- Generic VCS ----
+  - id: generic_bearer_token
+    name: Bearer Token
+    provider: bearer_token
+    pattern: '(?i)bearer\s+[A-Za-z0-9_\-\.=]{20,}'
+    severity: high
+    min_length: 26
+    description: HTTP Bearer authorization header
+    tags: [bearer, http, auth]
+
+  - id: basic_auth_url
+    name: Basic Auth in URL
+    provider: basic_auth
+    pattern: 'https?://[^:/\s]+:[^:/\s]+@[^\s/$.?#].[^\s]*'
+    severity: high
+    min_length: 15
+    description: HTTP(S) URL with embedded credentials
+    tags: [basic_auth, url]

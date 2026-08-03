@@ -1,0 +1,390 @@
+# SaaS and AI provider credentials: OpenAI, Anthropic, Stripe, Discord, Slack, etc.
+version: 1
+rules:
+  # ---- AI / LLM providers ----
+  - id: openai_api_key
+    name: OpenAI API Key
+    provider: openai_api_key
+    pattern: 'sk-[A-Za-z0-9]{20}T3BlbkFJ[A-Za-z0-9]{16}'
+    severity: critical
+    exact_format: true
+    min_length: 50
+    description: OpenAI API key (legacy format)
+    tags: [openai, ai, api_key]
+
+  - id: openai_api_key_v2
+    name: OpenAI API Key (v2)
+    provider: openai_api_key
+    pattern: 'sk-proj-[A-Za-z0-9_\-]{40,}'
+    severity: critical
+    exact_format: true
+    min_length: 40
+    description: OpenAI project API key
+    tags: [openai, ai, api_key]
+
+  - id: openai_api_key_short
+    name: OpenAI API Key (short)
+    provider: openai_api_key
+    pattern: 'sk-[A-Za-z0-9]{32,}'
+    severity: high
+    min_length: 32
+    description: OpenAI API key (short variant)
+    tags: [openai, ai, api_key]
+
+  - id: anthropic_api_key
+    name: Anthropic API Key
+    provider: anthropic_api_key
+    pattern: 'sk-ant-[A-Za-z0-9_\-]{70,}'
+    severity: critical
+    exact_format: true
+    min_length: 70
+    description: Anthropic Claude API key
+    tags: [anthropic, ai, api_key]
+
+  - id: google_gemini_api_key
+    name: Google Gemini API Key
+    provider: google_gemini
+    pattern: 'AIza[0-9A-Za-z_\-]{35}'
+    severity: high
+    min_length: 39
+    description: Google Gemini API key
+    tags: [google, gemini, ai]
+
+  - id: huggingface_token
+    name: Hugging Face Access Token
+    provider: huggingface
+    pattern: 'hf_[A-Za-z0-9]{34,}'
+    severity: high
+    exact_format: true
+    min_length: 34
+    description: Hugging Face access token
+    tags: [huggingface, ai]
+
+  - id: replicate_api_token
+    name: Replicate API Token
+    provider: replicate
+    pattern: 'r8_[A-Za-z0-9]{37}'
+    severity: high
+    exact_format: true
+    min_length: 37
+    description: Replicate API token
+    tags: [replicate, ai]
+
+  # ---- Payments ----
+  - id: stripe_secret_key
+    name: Stripe Secret Key
+    provider: stripe_secret_key
+    pattern: 'sk_live_[0-9a-zA-Z]{24,}'
+    severity: critical
+    exact_format: true
+    min_length: 32
+    description: Stripe live secret key
+    tags: [stripe, payment]
+
+  - id: stripe_test_secret_key
+    name: Stripe Test Secret Key
+    provider: stripe_secret_key
+    pattern: 'sk_test_[0-9a-zA-Z]{24,}'
+    severity: high
+    exact_format: true
+    min_length: 32
+    description: Stripe test secret key
+    tags: [stripe, payment, test]
+
+  - id: stripe_restricted_key
+    name: Stripe Restricted Key
+    provider: stripe_secret_key
+    pattern: 'rk_live_[0-9a-zA-Z]{24,}'
+    severity: critical
+    exact_format: true
+    min_length: 32
+    description: Stripe restricted live key
+    tags: [stripe, payment]
+
+  - id: stripe_publishable_key
+    name: Stripe Publishable Key (low severity)
+    provider: stripe_publishable
+    pattern: 'pk_live_[0-9a-zA-Z]{24,}'
+    severity: info
+    min_length: 32
+    description: Stripe publishable key (public, low severity)
+    tags: [stripe, payment, public]
+
+  - id: paypal_client_secret
+    name: PayPal Client Secret
+    provider: paypal
+    pattern: '(?i)paypal[_-]?client[_-]?secret[\s:=]+["'']?(EP[A-Za-z0-9_\-]{50,})["'']?'
+    severity: high
+    min_length: 50
+    description: PayPal client secret
+    tags: [paypal, payment]
+
+  - id: square_access_token
+    name: Square Access Token
+    provider: square
+    pattern: 'sq0atp-[0-9A-Za-z_\-]{22}'
+    severity: high
+    exact_format: true
+    min_length: 22
+    description: Square access token
+    tags: [square, payment]
+
+  - id: square_secret
+    name: Square Secret
+    provider: square
+    pattern: 'sq0csp-[0-9A-Za-z_\-]{43}'
+    severity: high
+    exact_format: true
+    min_length: 43
+    description: Square OAuth secret
+    tags: [square, payment]
+
+  - id: braintree_private_key
+    name: Braintree Private Key
+    provider: braintree
+    pattern: '(?i)braintree[_-]?private[_-]?key[\s:=]+["'']?([0-9a-f]{32,})["'']?'
+    severity: high
+    min_length: 32
+    description: Braintree private key
+    tags: [braintree, payment]
+
+  # ---- Crypto exchanges ----
+  - id: binance_api_key
+    name: Binance API Key
+    provider: binance
+    pattern: '(?i)binance[_-]?api[_-]?key[\s:=]+["'']?([A-Za-z0-9]{64})["'']?'
+    severity: high
+    min_length: 64
+    description: Binance API key
+    tags: [binance, crypto]
+
+  - id: coinbase_access_token
+    name: Coinbase Access Token
+    provider: coinbase
+    pattern: '(?i)coinbase[_-]?(access[_-]?token|api[_-]?key)[\s:=]+["'']?([A-Za-z0-9_\-]{40,})["'']?'
+    severity: high
+    min_length: 40
+    description: Coinbase access token
+    tags: [coinbase, crypto]
+
+  # ---- Web3 / RPC providers ----
+  - id: alchemy_api_key
+    name: Alchemy API Key
+    provider: alchemy
+    pattern: '(?:https://(?:eth|polygon|optimism|arbitrum|base)\.alchemyapi\.io/v2/|[a-z0-9-]+\.g\.alchemy\.com/v2/)([A-Za-z0-9_\-]{32})'
+    severity: high
+    exact_format: true
+    min_length: 32
+    description: Alchemy RPC API key
+    tags: [alchemy, web3]
+
+  - id: infura_api_key
+    name: Infura API Key
+    provider: infura
+    pattern: 'https://[a-z0-9]+\.infura\.io/v3/[A-Za-z0-9]{32}'
+    severity: high
+    exact_format: true
+    min_length: 32
+    description: Infura project ID in RPC URL
+    tags: [infura, web3]
+
+  - id: quicknode_url
+    name: QuickNode Endpoint URL
+    provider: quicknode
+    pattern: 'https://[a-z0-9-]+\.quiknode\.pro/[A-Za-z0-9_\-]{40,}/'
+    severity: high
+    min_length: 40
+    description: QuickNode RPC endpoint URL with secret
+    tags: [quicknode, web3]
+
+  # ---- Communication ----
+  - id: discord_bot_token
+    name: Discord Bot Token
+    provider: discord
+    pattern: '[MN][A-Za-z\d]{23,}\.[\w-]{6}\.[\w-]{27}'
+    severity: high
+    exact_format: true
+    min_length: 50
+    description: Discord bot token (3-part dot-separated)
+    tags: [discord, bot]
+
+  - id: discord_webhook
+    name: Discord Webhook URL
+    provider: discord_webhook
+    pattern: 'https://discord(?:app)?\.com/api/webhooks/\d+/[A-Za-z0-9_\-]{40,}'
+    severity: medium
+    min_length: 60
+    description: Discord webhook URL
+    tags: [discord, webhook]
+
+  - id: slack_token
+    name: Slack Token
+    provider: slack
+    pattern: 'xox[baprs]-[A-Za-z0-9-]{10,}'
+    severity: high
+    exact_format: true
+    min_length: 20
+    description: Slack token (bot/user/legacy)
+    tags: [slack]
+
+  - id: slack_webhook
+    name: Slack Webhook URL
+    provider: slack_webhook
+    pattern: 'https://hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+'
+    severity: medium
+    min_length: 50
+    description: Slack incoming webhook URL
+    tags: [slack, webhook]
+
+  - id: telegram_bot_token
+    name: Telegram Bot Token
+    provider: telegram
+    pattern: '[0-9]{8,10}:AA[A-Za-z0-9_\-]{33,}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: Telegram bot API token
+    tags: [telegram, bot]
+
+  - id: twilio_account_sid
+    name: Twilio Account SID
+    provider: twilio
+    pattern: 'AC[a-z0-9]{32}'
+    severity: medium
+    min_length: 34
+    description: Twilio account SID
+    tags: [twilio]
+
+  - id: twilio_auth_token
+    name: Twilio Auth Token (context)
+    provider: twilio
+    pattern: '(?i)twilio[_-]?auth[_-]?token[\s:=]+["'']?([a-f0-9]{32})["'']?'
+    severity: high
+    min_length: 32
+    description: Twilio auth token (needs context)
+    tags: [twilio]
+
+  - id: mailgun_api_key
+    name: Mailgun API Key
+    provider: mailgun
+    pattern: 'key-[0-9a-zA-Z]{32}'
+    severity: high
+    exact_format: true
+    min_length: 32
+    description: Mailgun legacy API key
+    tags: [mailgun, email]
+
+  - id: sendgrid_api_key
+    name: SendGrid API Key
+    provider: sendgrid
+    pattern: 'SG\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{32,}'
+    severity: high
+    exact_format: true
+    min_length: 50
+    description: SendGrid API key
+    tags: [sendgrid, email]
+
+  - id: mailchimp_api_key
+    name: Mailchimp API Key
+    provider: mailchimp
+    pattern: '[a-f0-9]{32}-us[0-9]{1,2}'
+    severity: high
+    exact_format: true
+    min_length: 36
+    description: Mailchimp API key with datacenter suffix
+    tags: [mailchimp, email]
+
+  - id: postmark_api_token
+    name: Postmark API Token
+    provider: postmark
+    pattern: '(?i)postmark[_-]?api[_-]?token[\s:=]+["'']?([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})["'']?'
+    severity: high
+    min_length: 36
+    description: Postmark API token
+    tags: [postmark, email]
+
+  # ---- SaaS ----
+  - id: npm_token
+    name: NPM Auth Token
+    provider: npm
+    pattern: 'npm_[A-Za-z0-9]{36}'
+    severity: high
+    exact_format: true
+    min_length: 36
+    description: npm publish token (granular)
+    tags: [npm, registry]
+
+  - id: figma_token
+    name: Figma Access Token
+    provider: figma
+    pattern: 'figd_[A-Za-z0-9_\-]{40,}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: Figma personal access token
+    tags: [figma, design]
+
+  - id: datadog_api_key
+    name: Datadog API Key
+    provider: datadog
+    pattern: '(?i)datadog[_-]?api[_-]?key[\s:=]+["'']?([a-f0-9]{32})["'']?'
+    severity: high
+    min_length: 32
+    description: Datadog API key
+    tags: [datadog, monitoring]
+
+  - id: datadog_app_key
+    name: Datadog APP Key
+    provider: datadog
+    pattern: '(?i)datadog[_-]?app[_-]?key[\s:=]+["'']?([a-f0-9]{40})["'']?'
+    severity: high
+    min_length: 40
+    description: Datadog application key
+    tags: [datadog, monitoring]
+
+  - id: sentry_dsn
+    name: Sentry DSN
+    provider: sentry
+    pattern: 'https?://[a-f0-9]{32}@(?:[a-z0-9.-]+\.)?sentry\.io/[0-9]+'
+    severity: medium
+    min_length: 40
+    description: Sentry DSN with secret embedded
+    tags: [sentry, monitoring]
+
+  - id: notion_token
+    name: Notion Integration Token
+    provider: notion
+    pattern: 'secret_[A-Za-z0-9]{43}'
+    severity: high
+    exact_format: true
+    min_length: 43
+    description: Notion integration token
+    tags: [notion, saas]
+
+  - id: asana_pat
+    name: Asana Personal Access Token
+    provider: asana
+    pattern: '(?i)asana[_-]?token[\s:=]+["'']?([0-9]/[a-f0-9]{64})["'']?'
+    severity: high
+    min_length: 60
+    description: Asana personal access token
+    tags: [asana, saas]
+
+  - id: linear_api_key
+    name: Linear API Key
+    provider: linear
+    pattern: 'lin_api_[A-Za-z0-9]{40}'
+    severity: high
+    exact_format: true
+    min_length: 40
+    description: Linear API key
+    tags: [linear, saas]
+
+  - id: jira_pat
+    name: Jira Personal Access Token
+    provider: jira
+    pattern: '(?i)(jira|atlassian)[_-]?pat[\s:=]+["'']?([A-Za-z0-9_\-]{40,})["'']?'
+    severity: high
+    min_length: 40
+    description: Jira personal access token
+    tags: [jira, atlassian]
